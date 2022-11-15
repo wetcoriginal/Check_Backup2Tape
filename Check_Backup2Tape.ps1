@@ -19,7 +19,7 @@ function CheckOneJob {
         if($JobCheck.Enabled -eq $false){ # Disabled job -> WARNING
             if($JobCheck.Enabled -ne $true){
                 $global:OutMessageTemp+=" WARNING - Le job '"+$JobCheck.Name+"' est desactive "
-                $global:WarningDisabledCount++  #exo
+                $global:WarningDisabledCount++
                 if($global:ExitCode -lt 2){$global:ExitCode=1} # if no previous Critical status then switch to WARNING
                 }
             }
@@ -29,23 +29,23 @@ function CheckOneJob {
             if($lastStatus -eq "Working"){
                 $global:OutMessageTemp+="OK - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
                 $global:OutMessageTemp+="OK "+$LastRun+" est le temps"
-                $global:OkCount++  #exo
+                $global:OkCount++
             }
             else {
                 if($lastStatus -ne "Success"){ # Failed or None->never run before (probaly a newly created job)
                     if($lastStatus -eq "none"){
                         $global:OutMessageTemp+="WARNING: Le job "+$JobCheck.Name+" n a jamais ete execute"
-                        $global:WarningCount++  #exo
+                        $global:WarningCount++
                         if($global:ExitCode -ne 2) {$global:ExitCode=1}
                     }
                     elseif($lastStatus -eq "Warning"){
                         $global:OutMessageTemp+="WARNING - Le job "+$JobCheck.Name+" s est termine avec des messages d'alertes"
-                        $global:WarningCount++  #exo
+                        $global:WarningCount++
                         if($global:ExitCode -ne 2) {$global:ExitCode=1}
                     }
                     else {
                         $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" a echoue"
-                        $global:CriticalCount++  #exo
+                        $global:CriticalCount++
                         $global:ExitCode=2
                        }
                 }
@@ -59,7 +59,7 @@ function CheckOneJob {
                     {
                         $global:ExitCode=2
                         $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" n a pas ete execute lors de la derniere journee"
-                        $global:CriticalCount++  #exo
+                        $global:CriticalCount++
                     }
                         else
                         {
@@ -68,7 +68,7 @@ function CheckOneJob {
                             $global:OutMessageTemp+="OK - "
                             $global:OutMessageTemp+=$JobCheck.Name+" "
                             $global:OutMessageTemp+="execute le "+$LastRun
-                            $global:OkCount++  #exo
+                            $global:OkCount++
                         }
                     }
                 }
@@ -89,7 +89,7 @@ $global:OutMessage=""
 $global:Exitcode=""
 $WarningPreference = 'SilentlyContinue'
 
-#exo - Ajout de variables pour compter le nombre d'erreurs
+#Ajout de variables pour compter le nombre d'erreurs
 $global:WarningDisabledCount=0
 $global:WarningCount=0
 $global:CriticalCount=0
@@ -136,10 +136,10 @@ else {
         CheckOneJob($Vjob.Name)
     }
 }
-#exo - Ajout du nombre total d'erreur dÃ©tectÃ©es
+#Ajout du nombre total d'erreur dÃ©tectÃ©es
 $TotalCount=$global:WarningDisabledCount + $global:WarningCount + $global:CriticalCount + $global:OkCount
 $global:OutMessage="TOTAL=>" + $TotalCount + " / OK=>" + $global:OkCount + " / CRITICAL=>" + $global:CriticalCount + " / DISABLE=>" + $global:WarningDisabledCount + " / WARNING=>" + $global:WarningCount
-#exo - Ajout variable Graph pour visualisation graphique sur centreon
+#Ajout variable Graph pour visualisation graphique sur centreon
 $global:Graph=" |  Ok=" + $global:OkCount + " Warning=" + $global:WarningCount + " Critical=" + $global:CriticalCount
 $global:OutMessage+="`r`n" + $global:OutMessageTemp + $global:Graph
 write-host $global:OutMessage
