@@ -1,15 +1,5 @@
-# Install NsClient++ and configure it properly for tyour environment in the Veeam Backup Server
-# Add the following lines to the nsclient.ini file removing the hash character at the beggining
-# /settings/external scripts/scripts]
-# check_veeam_jobs = cmd /c echo scripts\Check_Veeam_Jobs.ps1 ; exit($lastexitcode) | powershell.exe -command -
-# Copy this script to the %programfiles%\nsclient++\scripts folder and restart nsclient service
-# By default this script checks all the backup jobs defined and warns when a job fails or is disabled
-# if you donï¿½t want to be warned when a job is disabled, use the -d switch
-# if you want to check one specific backup job, use -j switch followed by the Job Name 
-# This is a sample of how to add those parameters to the nsclient.ini file:
-# check_veeam_jobs = cmd /c echo scripts\Check_Veeam_Jobs.ps1  "-d" "$ARG1$" "-f" ; exit($lastexitcode) | powershell.exe -command -
-# Good luck 
-# @javichumellamo
+# Edited by @wetcoriginal for backup 2 tape jobs #
+
 
 Add-PSSnapin -Name VeeamPSSnapIn -ErrorAction SilentlyContinue
 function CheckOneJob {
