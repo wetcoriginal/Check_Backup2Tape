@@ -26,10 +26,14 @@ function CheckOneJob {
         else  # The job is enabled
         {
             $lastStatus=$JobCheck | Foreach-Object LastResult
-            $lastState=$JobCheck | Foreach-Object LastState
+			$lastState=$JobCheck | Foreach-Object LastState
             if($lastState -eq "Working"){
                 $global:OutMessageTemp+="OK - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
-                $global:OkCount++
+                $global:OkCount++  #exo
+			}
+           elseif($lastState -eq "WaitingTape"){
+                $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" est en attente d'une bande de sauvegarde"
+                $global:CriticalCount++  #exo
             }
             else {
                 if($lastStatus -ne "Success"){ # Failed or None->never run before (probaly a newly created job)
