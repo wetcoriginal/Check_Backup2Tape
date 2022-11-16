@@ -26,9 +26,9 @@ function CheckOneJob {
         else  # The job is enabled
         {
             $lastStatus=$JobCheck | Foreach-Object LastResult
-            if($lastStatus -eq "Working"){
+            $lastState=$JobCheck | Foreach-Object LastState
+            if($lastState -eq "Working"){
                 $global:OutMessageTemp+="OK - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
-                $global:OutMessageTemp+="OK "+$LastRun+" est le temps"
                 $global:OkCount++
             }
             else {
