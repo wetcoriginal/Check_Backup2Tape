@@ -18,7 +18,7 @@ function CheckOneJob {
             $lastStatus=$JobCheck | Foreach-Object LastResult
 			$lastState=$JobCheck | Foreach-Object LastState
             if($lastState -eq "Working"){
-                $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" est en attente d'une bande de sauvegarde"
+                $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
                 $global:CriticalCount++  #exo
                 $global:ExitCode=2
 			}
