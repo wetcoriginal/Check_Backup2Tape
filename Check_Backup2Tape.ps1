@@ -3,7 +3,7 @@
 
 Add-PSSnapin -Name VeeamPSSnapIn -ErrorAction SilentlyContinue
 function CheckOneJob {
-    $JobCheck=get-vbrtapejob -Name 'Backup2Tape'
+    $JobCheck=get-vbrtapejob -Name 'Backup to Tape Job DC'
         if($global:OutMessageTemp -ne ""){$global:OutMessageTemp+="`r`n"}
 
         if($JobCheck.Enabled -eq $false){ # Disabled job -> WARNING
@@ -18,13 +18,12 @@ function CheckOneJob {
             $lastStatus=$JobCheck | Foreach-Object LastResult
 			$lastState=$JobCheck | Foreach-Object LastState
             if($lastState -eq "Working"){
-                $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
-                $global:CriticalCount++  #exo
-                $global:ExitCode=2
+                $global:OutMessageTemp+="OK - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
+                $global:OkCount++  #exo
 			}
            elseif($lastState -eq "WaitingTape"){
-                $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" est en attente d'une bande de sauvegarde"
-                $global:CriticalCount++  #exo
+                $global:OutMessageTemp+="WARNING - Le job "+$JobCheck.Name+" est en attente d'une bande de sauvegarde"
+                $global:WarningCount++  #exo
             }
             else {
                 if($lastStatus -ne "Success"){ # Failed or None->never run before (probaly a newly created job)
@@ -127,15 +126,13 @@ $ExitCode=0
 IF($oneJob -eq $true){
     CheckOneJob($jobToCheck)}
 else {
-    foreach($Vjob in $VJobList){
         CheckOneJob($Vjob.Name)
     }
-}
 #Ajout du nombre total d'erreur dÃ©tectÃ©es
 $TotalCount=$global:WarningDisabledCount + $global:WarningCount + $global:CriticalCount + $global:OkCount
 $global:OutMessage="TOTAL=>" + $TotalCount + " / OK=>" + $global:OkCount + " / CRITICAL=>" + $global:CriticalCount + " / DISABLE=>" + $global:WarningDisabledCount + " / WARNING=>" + $global:WarningCount
 #Ajout variable Graph pour visualisation graphique sur centreon
 $global:Graph=" |  Ok=" + $global:OkCount + " Warning=" + $global:WarningCount + " Critical=" + $global:CriticalCount
-$global:OutMessage+="`r`n" + $global:OutMessageTemp + $global:Graph
+write-host $global:OutMessageTemp
 write-host $global:OutMessage
 exit $global:Exitcode
