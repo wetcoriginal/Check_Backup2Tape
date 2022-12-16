@@ -3,7 +3,7 @@
 
 Add-PSSnapin -Name VeeamPSSnapIn -ErrorAction SilentlyContinue
 function CheckOneJob {
-    $JobCheck=get-vbrtapejob -Name 'Backup to Tape Job DC'
+    $JobCheck=get-vbrtapejob -Name 'Backup to Tape Job'
         if($global:OutMessageTemp -ne ""){$global:OutMessageTemp+="`r`n"}
 
         if($JobCheck.Enabled -eq $false){ # Disabled job -> WARNING
@@ -19,11 +19,11 @@ function CheckOneJob {
 			$lastState=$JobCheck | Foreach-Object LastState
             if($lastState -eq "Working"){
                 $global:OutMessageTemp+="OK - Le job "+$JobCheck.Name+" est en cours de sauvegarde"
-                $global:OkCount++  #exo
+                $global:OkCount++ 
 			}
            elseif($lastState -eq "WaitingTape"){
                 $global:OutMessageTemp+="WARNING - Le job "+$JobCheck.Name+" est en attente d'une bande de sauvegarde"
-                $global:WarningCount++  #exo
+                $global:WarningCount++ 
             }
             else {
                 if($lastStatus -ne "Success"){ # Failed or None->never run before (probaly a newly created job)
@@ -49,7 +49,7 @@ function CheckOneJob {
                 $LastRun=$LastRunSession.'$_.endtime'
                 $EstRun=get-date
                 $DiffTime=$EstRun - $LastRun
-                    if ($DiffTime.TotalDays -gt 1)
+                    if ($DiffTime.Days -gt 1)
                     {
                         $global:ExitCode=2
                         $global:OutMessageTemp+="CRITICAL - Le job "+$JobCheck.Name+" n a pas ete execute lors de la derniere journee"
